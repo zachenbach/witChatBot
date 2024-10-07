@@ -32,7 +32,7 @@ def bag_of_words (sentence):
 def predict_class (sentence):
     bow = bag_of_words (sentence)
     res = model.predict(np.array([bow]))[0]
-    ERROR_THRESHOLD = 0.25
+    ERROR_THRESHOLD = 0.01
     results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
 
     results.sort(key=lambda x: x[1], reverse=True)
