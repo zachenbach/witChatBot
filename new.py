@@ -11,20 +11,21 @@ from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 
-intents = json.loads(open('C:\witChatBot\.venv\intents.json').read())
+data = json.loads(open('C:\witChatBot\.venv\\trainingData.json').read())
 
 words = []
 classes = []
 documents = []
 ignoreLetters = ['?', '!', '.', ',']
 
-for intent in intents['intents']:
-    for pattern in intent['patterns']:
+for info in data['data']:
+    for pattern in info['patterns']:
+        pattern = pattern.lower();
         wordList = nltk.word_tokenize(pattern)
         words.extend(wordList)
-        documents.append((wordList, intent['tag']))
-        if intent['tag'] not in classes:
-            classes.append(intent['tag'])
+        documents.append((wordList, info['tag']))
+        if info['tag'] not in classes:
+            classes.append(info['tag'])
 
 words = [lemmatizer.lemmatize(word) for word in words if word not in ignoreLetters]
 words = sorted(set(words))
@@ -65,8 +66,8 @@ model.add(tf.keras.layers.Dense(len(trainY[0]), activation='softmax'))
 sgd = tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-hist = model.fit(np.array(trainX), np.array(trainY), epochs=250, batch_size=5, verbose=1)
-model.save('chatbot_model.h5', hist)
+hist = model.fit(np.array(trainX), np.array(trainY), epochs=25, batch_size=5, verbose=1)
+model.save('model.h5', hist)
 print('Done')
 
 
