@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import scrolledtext
+from spellchecker import SpellChecker
 import random
 import json
 import pickle
@@ -23,7 +24,7 @@ def send_message():
         user_input.delete(0, tk.END)
 
         # Bot response (can be modified with chatbot logic)
-        bot_response = res
+        bot_response = "Ruggles: " + res
         chat_log.insert(tk.END, bot_response + "\n")
         chat_log.config(state=tk.DISABLED)
         chat_log.yview(tk.END)  # Auto-scroll to the latest message
@@ -39,10 +40,10 @@ def close_window():
     window.quit()
 
 def spell_check(sentence):
-    blob = TextBlob(sentence)
-    lowercase = blob.lower()
-    corrected_sentence = lowercase.correct()
-    return str(corrected_sentence)
+    spell = SpellChecker()
+    for words in sentence:
+        words = spell.correction(words)
+    return sentence
     
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
