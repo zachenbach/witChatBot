@@ -6,6 +6,7 @@ import json
 import pickle
 import numpy as np
 import nltk
+import re
 
 from textblob import TextBlob
 from nltk.stem import WordNetLemmatizer
@@ -14,13 +15,11 @@ from keras.models import load_model
 # Function to handle sending messages
 def send_message():
     message = user_input.get()
-    print(message)
-    corrected_message = spell_check(message)
-    ints = predict_class(corrected_message)
+    ints = predict_class(message)
     res = get_response(ints, data)
     if message.strip():
         chat_log.config(state=tk.NORMAL)
-        chat_log.insert(tk.END, "You: " + corrected_message + "\n")
+        chat_log.insert(tk.END, "You: " + message + "\n")
         user_input.delete(0, tk.END)
 
         # Bot response (can be modified with chatbot logic)
@@ -46,11 +45,14 @@ def spell_check(sentence):
     return sentence
     
 def clean_up_sentence(sentence):
+    sentence = spell_check(sentence)
+    print(sentence)
     sentence_words = nltk.word_tokenize(sentence)
     sentence_words = [lemmatizer.lemmatize(word) for word in sentence_words]
     return sentence_words
 
 def bag_of_words (sentence):
+    sentence = sentence.lower()
     sentence_words = clean_up_sentence(sentence)
     bag = [0] * len(words)
     for w in sentence_words:
@@ -71,7 +73,7 @@ def predict_class (sentence):
     return return_list
 
 def get_response(data_list, data_json):
-    PTHRESHOLD = .3
+    PTHRESHOLD = .7
     tag = data_list[0]['data']
     print(tag)
     worth = False
@@ -89,7 +91,7 @@ def get_response(data_list, data_json):
                 break
         return result
     else:
-        return -1
+        return "I am sorry I do not understand! Please try another question or visit"
 
 print("Bot is good")
 
