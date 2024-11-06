@@ -65,7 +65,7 @@ def get_response(data_list, data_json):
                 break
         return result
     else:
-        return -1
+        return  "I am sorry I do not understand! Please try another question or visit..."
 
 print("Bot is good")
 

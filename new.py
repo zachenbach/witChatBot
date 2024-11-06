@@ -66,7 +66,7 @@ model.add(tf.keras.layers.Dense(len(trainY[0]), activation='softmax'))
 sgd = tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-hist = model.fit(np.array(trainX), np.array(trainY), epochs=25, batch_size=5, verbose=1)
+hist = model.fit(np.array(trainX), np.array(trainY), epochs=45, batch_size=5, verbose=1)
 model.save('model.h5', hist)
 print('Done')
 
