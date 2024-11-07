@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WitChat Bot</title>
     <style>
+        /* General styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -15,6 +16,7 @@
             height: 100vh;
         }
 
+        /* Chatbot container styling */
         #chatbot-container {
             position: fixed;
             bottom: 20px;
@@ -28,12 +30,59 @@
             flex-direction: column;
         }
 
+        /* Chatbox slide animations */
+        .slide-in { animation-name: slideIn; }
+        .slide-out { animation-name: slideOut; }
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(100%); opacity: 0; }
+        }
+		
+		/* Message fade-in animation */
+		.fade-in {
+			animation: fadeIn 0.3s ease-in-out;
+		}
+
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+        
+        /* Top Bar */
+        #top-bar {
+            background-color: #0084ff;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #top-bar h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Chat container */
         #chat-container {
             background-color: white;
             display: flex;
             flex-direction: column;
         }
 
+        /* Chat log */
         #chat-log {
             padding: 10px;
             height: 300px;
@@ -42,6 +91,7 @@
             flex-direction: column;
         }
 
+        /* Message styling */
         .bot-message, .user-message {
             display: flex;
             align-items: center;
@@ -61,6 +111,8 @@
             padding: 8px;
             border-radius: 10px;
             line-height: 1.4;
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
 
         .bot-message .message-text {
@@ -74,6 +126,7 @@
             margin-left: auto;
         }
 
+        /* Input area */
         #input-area {
             display: flex;
             padding: 10px;
@@ -97,7 +150,30 @@
             font-size: 14px;
         }
 
-        .send-button { background-color: #4CAF50; }
+        .send-button { 
+            background-color: #4CAF50; 
+        }
+
+        /* Initial Toggle Button with Hover Effect */
+        #toggle-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 250px;
+            height: 40px;
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+		
+        #toggle-button:hover {
+            transform: translateY(-5px);
+            background-color: #006bbd;
+        }
     </style>
 </head>
 <body>
