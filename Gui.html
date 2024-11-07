@@ -178,13 +178,19 @@
 </head>
 <body>
 
-<div id="chatbot-container">
+<button id="toggle-button" onclick="toggleChat()">Open Chat</button>
+
+<div id="chatbot-container" class="slide-out">
+	<div id="top-bar">
+		<h3>Chat Bot</h3>
+		<button class="close-button" onclick="toggleChat()">X</button>
+	</div>
     <div id="chat-container">
         <div id="chat-log">
-            <!-- Chat messages will be displayed here -->
+		
         </div>
         <div id="input-area">
-            <input type="text" id="user-input" placeholder="Type a message..." autofocus onkeydown="handleKeyDown(event)">
+            <input type="text" id="user-input" maxlength="150" placeholder="Type a message..." autofocus onkeydown="handleKeyDown(event)">
             <button class="button send-button" onclick="sendMessage()">Send</button>
         </div>
     </div>
