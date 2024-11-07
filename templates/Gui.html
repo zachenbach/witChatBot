@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WitChat Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        #chat-container {
+            width: 400px;
+            max-width: 90%;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        #chat-log {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .bot-message, .user-message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .bot-message img, .user-message img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .message-text {
+            max-width: 70%;
+            padding: 8px;
+            border-radius: 10px;
+            line-height: 1.4;
+        }
+        .bot-message .message-text {
+            background-color: #e2f0fb;
+            color: #333;
+        }
+        .user-message .message-text {
+            background-color: #0084ff;
+            color: white;
+            margin-left: auto;
+        }
+        #input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+        .button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+        }
+        .send-button { background-color: #4CAF50; }
+        .clear-button { background-color: #f0ad4e; }
+        .exit-button { background-color: #d9534f; }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat-log">
+        
+    </div>
+    
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Type a message..." autofocus>
+        <button class="button send-button" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    // Function to handle sending messages
+    function sendMessage() {
+        const userInput = document.getElementById('user-input');
+        const message = userInput.value.trim();
+
+        if (message) {
+            addMessageToChatLog("You", message, "user-message");
+            userInput.value = '';
+
+            
+            getBotResponse(message);
+        }
+    }
+
+    // Function to add messages to the chat log
+    function addMessageToChatLog(sender, text, type) {
+        const chatLog = document.getElementById('chat-log');
+        
+        // Create message element
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add(type);
+
+        // Add avatar 
+        if (type === "bot-message") {
+            const avatar = document.createElement('img');
+            avatar.src = "https://scontent-bos5-1.xx.fbcdn.net/v/t39.30808-6/329697017_876914920203474_3007580459170497318_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=aru4wqqbQmEQ7kNvgEnz-8F&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=AW5uUwzz4cz3gtWmfsj8aW2&oh=00_AYC-0hVMpbKpPkZEVgr3IGNQn8yMvJjh-Xqr5zQCiGrhKQ&oe=672EF254"; // Placeholder for bot avatar
+            avatar.alt = "Bot Avatar";
+            messageContainer.appendChild(avatar);
+        }
+
+        // Add message text
+        const messageText = document.createElement('div');
+        messageText.classList.add('message-text');
+        messageText.innerText = `${sender}: ${text}`;
+        messageContainer.appendChild(messageText);
+
+        chatLog.appendChild(messageContainer);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Function to simulate bot response
+    async function getBotResponse(message) 
+    {
+        if(message){
+        const response = await fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_input: message })
+            });
+            const data = await response.text();  
+
+            setTimeout(() => addMessageToChatLog("Ruggles", data, "bot-message"), 500);
+        }
+    }
+</script>
+
+</body>
+</html>
