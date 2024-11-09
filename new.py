@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 
-data = json.loads(open('C:\witChatBot\.venv\\trainingData.json').read())
+data = json.loads(open('.venv\\nounData.json').read())
 
 words = []
 classes = []
@@ -23,17 +23,17 @@ for info in data['data']:
         pattern = pattern.lower();
         wordList = nltk.word_tokenize(pattern)
         words.extend(wordList)
-        documents.append((wordList, info['tag']))
-        if info['tag'] not in classes:
-            classes.append(info['tag'])
+        documents.append((wordList, info['category']))
+        if info['category'] not in classes:
+            classes.append(info['category'])
 
 words = [lemmatizer.lemmatize(word) for word in words if word not in ignoreLetters]
 words = sorted(set(words))
 
 classes = sorted(set(classes))
 
-pickle.dump(words, open('words.pkl', 'wb'))
-pickle.dump(classes, open('classes.pkl', 'wb'))
+pickle.dump(words, open('words', 'wb'))
+pickle.dump(classes, open('categories', 'wb'))
 
 training = []
 outputEmpty = [0] * len(classes)
@@ -67,7 +67,7 @@ sgd = tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
 hist = model.fit(np.array(trainX), np.array(trainY), epochs=45, batch_size=5, verbose=1)
-model.save('model.h5', hist)
+model.save('trainedModel.h5', hist)
 print('Done')
 
 

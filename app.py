@@ -1,27 +1,95 @@
 from flask import Flask, render_template, request
-import tkinter as tk
-from tkinter import scrolledtext
 from spellchecker import SpellChecker
 import random
 import json
 import pickle
 import numpy as np
 import nltk
-from textblob import TextBlob
 from nltk.stem import WordNetLemmatizer
-from keras.models import load_model
+from nltk import pos_tag
+from keras.models import load_model 
+from nltk import ConditionalFreqDist, bigrams #new
+from nltk.tokenize import word_tokenize #new
 
-lemmatizer = WordNetLemmatizer()
-data = json.loads(open('.venv\\trainingData.json').read())
-words = pickle.load(open('words.pkl', 'rb'))
-classes = pickle.load(open('classes.pkl', 'rb'))
-model = load_model('model.h5')
 
+#Global Resources
+SAMPLEDATA = [
+    # General responses
+    "How can I help you today?",
+    "What can I assist you with?",
+    "I'm here to help answer your questions",
+    "Please let me know what information you need",
+    "What would you like to know?",
+    "I can provide information about various topics",
+    "How may I assist you?",
+    "What brings you here today?",
+    
+    # Acknowledgments
+    "Sure, I understand",
+    "Sure, let me help you with that",
+    "Of course, I can help",
+    "Yes, I can assist you",
+    "Thank you for asking",
+    "I appreciate your question",
+    
+    # Follow-ups
+    "Would you like to know more?",
+    "Is there anything else you need?",
+    "Do you have any other questions?",
+    "Let me know if you need more information",
+    "Would you like me to explain further?",
+    
+    # Clarifications
+    "Could you please provide more details?",
+    "Would you mind elaborating on that?",
+    "I'm not sure I understand, could you explain more?",
+    "Please tell me more about your question",
+    "What specific information are you looking for?",
+    
+    # Common responses
+    "That's a good question",
+    "I'll help you find the information",
+    "Let me check that for you",
+    "I'd be happy to help with that",
+    "Let's figure this out together"
+]
+
+def prepareTrainingData(sample_data):
+    processedData = []
+    for sentence in sample_data:
+        sentence = sentence.strip()
+        processedData.append(sentence)
+    
+    tokens = []
+    for sentence in processedData:
+        words = word_tokenize(sentence.lower())
+        tokens.extend(words)
+    
+    #this is to understand word relationships - 2 consecutive words(pairs)
+    bigramToken = list(bigrams(tokens))
+    #this is to track word patterns - creating frequency distribution of bigrams 
+    cfd = ConditionalFreqDist(bigramToken)
+    
+    return tokens, bigramToken, cfd
+
+TOKENS, BIGRAMS, CFD = prepareTrainingData(SAMPLEDATA)
+LEMMATIZER = WordNetLemmatizer()
+DATA = json.loads(open('.venv\\nounData.json').read())
+DICTIONARY = pickle.load(open('words', 'rb'))
+CATEGORIES = pickle.load(open('categories', 'rb'))
+MODEL = load_model('trainedModel.h5')
+#MCI ( Minimum confidence interval ). This is the confidence cutoff of the bot, if lower than MCI, then category will be discarded.
+MCI = 0.5
+
+
+#Begins rendering ./templates/Gui.html to localhost
 app = Flask(__name__)
 @app.route("/")
 def index():
         return render_template('Gui.html')
 
+
+#When POST is called under "/submit", checks validity of input, and begins main function
 @app.route('/submit', methods=['POST'])
 def submit():
     if request.method == 'POST':
@@ -32,66 +100,179 @@ def submit():
         result = chatBot(user_input)  # Call your Python function with the input
         return result
 
+
+#Main (chatbot)
+#Takes in input, from POST. Sends input to be corrected, then uses the new message to find the intention, then the intention and "trainingData.json" to get a message
 def chatBot(inputD):  
     print(inputD)
-    corrected_message = spell_check(inputD)
-    ints = predict_class(corrected_message)
-    res = get_response(ints, data)
-    return res
+    correctedInput = inputCorrector(inputD)
+    category = predictCategory(correctedInput)
+    response = predictBestResponse(category, DATA,correctedInput)
+    return response
 
-def spell_check(sentence):
+
+#inputCorrector. 
+# normalizes to lowercase, spell checks, and returns the updated message.
+def inputCorrector(sentence):
     sentence = sentence.lower()
     spell = SpellChecker()
     for words in sentence:
         words = spell.correction(words)
     return sentence
-    
-def clean_up_sentence(sentence):
-    sentence_words = nltk.word_tokenize(sentence)
-    sentence_words = [lemmatizer.lemmatize(word) for word in sentence_words]
-    print(sentence_words)
-    return sentence_words
 
-def bag_of_words (sentence):
-    sentence_words = clean_up_sentence(sentence)
-    bag = [0] * len(words)
-    for w in sentence_words:
-        for i, word in enumerate(words):
-            if word == w:
-                bag[i] = 1
-    return np.array(bag)
 
-def predict_class (sentence):
-    bow = bag_of_words (sentence)
-    res = model.predict(np.array([bow]))[0]
-    ERROR_THRESHOLD = 0.01
-    results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
-    results.sort(key=lambda x: x[1], reverse=True)
-    return_list = []
-    for r in results:
-        return_list.append({'data': classes [r[0]], 'probability': str(r[1])})
-    return return_list
+#inputNormalizer
+#Takes in the input, and tokenizes it ( turns each word into an index in a list ).
+#Uses the tokenized input to lemmatize the words ( taking all forms of tyhe same word and grouping them together ). Finally, the functions returns.
+def inputNormalizer(input):
+    posWords = pos_tag(nltk.word_tokenize(input))
+    nouns = [word for word, pos in posWords if pos == "NN"]
+    nouns = [LEMMATIZER.lemmatize(word) for word in nouns]
+    print(nouns)
+    return nouns
 
-def get_response(data_list, data_json):
-    PTHRESHOLD = .7
-    tag = data_list[0]['data']
-    print(tag)
+
+#wordArray
+#This function takes in our cleaned up input, tokenizes it, and then creates an array of 0's, with the same length as dictionary
+#Dictionary is a library of every word that is used in trainingData. So, when it checks each word in our tokenized input, it is checking if that word is in trainingData.
+def wordArray(input):
+    inputtedWords = inputNormalizer(input)
+    wordArray = [0] * len(DICTIONARY)
+    for inputWord in inputtedWords:
+        for idx, dictionaryWord in enumerate(DICTIONARY):
+            if dictionaryWord == inputWord:
+                wordArray[idx] = 1
+    return np.array(wordArray)
+
+
+#predictCategory
+#This function takes in the input, makes it into an array based on wordArray. It then uses that array to predict the likelihood it could be in any category and place those into a list.
+#This list is checked against MCI, keeping any categories higher than it. And finally, it normalizes the list, so it can be read later ( see line 145-146 ). Returns finalCategories
+def predictCategory(input):
+    inputArray = wordArray(input)
+    response = MODEL.predict(np.array([inputArray]))[0]
+    categoryList = [[idx, r] for idx, r in enumerate(response) if r > MCI]
+    categoryList.sort(key=lambda x: x[1], reverse=True)
+    finalCategories = []
+    for r in categoryList:
+        finalCategories.append({'category': CATEGORIES[r[0]], 'probability': str(r[1])})
+    return finalCategories
+
+
+#predictBestReponse
+#Finds the first category and its probability from the inputted list of suitable Categories. Checks it against PTHRESHOLD. 
+#If it is above PTHRESHOLD it will get a reposnse from that category, pulled from trainingData.json or dataJSON. returns reponse.
+#If it is below, it runs noun check.
+def predictBestResponse(dataList, dataJSON,input):
     worth = False
-    probability = data_list[0]['probability']
-    print(probability)
-    probability = float(probability)
-    if(probability > PTHRESHOLD):
-        worth = True
+    try: 
+        if not dataList:
+            return "I'm sorry, could you be more specific?"
+        
 
-    if worth:
-        list_of_intents = data_json['data']
-        for i in list_of_intents:
-            if i['tag'] == tag:
-                result = random.choice (i['responses'])
-                break
-        return result
-    else:
-        return  "I am sorry I do not understand! Please try another question or visit..."
+        category = dataList[0]['category']
+        probability = dataList[0]['probability']
+        print("Category: " + category + "\nChance: " + probability)
+        probability = float(probability)
+
+        pthreshold = 0.65 if len(input) <= 4 else 0.25
+        if(probability > pthreshold):
+            worth = True
+
+        if worth:
+            categoryList = dataJSON['data']
+            for idx in categoryList:
+                if idx['category'] == category:
+                    response = random.choice (idx['response'])
+                    break
+            return response
+        else:
+            return generateNLGResponse(input)
+    except Exception as e:
+        print(f"Error in get_response: {str(e)}")
+        return generateNLGResponse(None)
+
+
+#generateNLGResponse
+#Takes in the category, finds a response to respond with. If it containts a question identifier, generate a response, if not choose from defaultResponses.
+def generateNLGResponse(input):
+
+    defaultResponses = [
+        "I'm here to help. Could you please provide more details?",
+        "I'd be happy to assist you. Could you be more specific?",
+        "Let me help you with that. What exactly would you like to know?",
+        "I'm listening. Please tell me more about what you need.",
+        "I want to make sure I understand correctly. Could you elaborate?"
+    ]
+    #if question is not clear, use one of the above responses
+    if not input in ['what', 'why', 'how']:
+        return random.choice(defaultResponses)
+        
+    #generating a more specific response based on intent
+    words = word_tokenize(input)
+    #checks if there is any matching word so it can provide answer based on intent
+    meaningfulWords = [w for w in words 
+                       if w.lower() in CFD 
+                       and w.lower() not in {'what', 'the', 'a', 'an', 'is', 'are'}]
+    
+    if meaningfulWords:
+        response = generateSentence(random.choice(meaningfulWords), CFD, length=15)
+        if len(response.split()) > 3:
+            return response
+    
+    return random.choice(defaultResponses)
+
+#generateSentences
+#(filler)
+def generateSentence(start_word, cfd, length=10):
+      word = start_word.lower()
+      sentence = []
+      current_length = 0
+      max_length = length
+
+      #Keeping track of previous used words to avoid repetition
+      used_words = set()
+    
+
+      while current_length < max_length:
+        #checking if the current word is in frequency distrubiton
+        if word not in cfd or not cfd[word].items():
+            break
+            
+        #guessing the potential next word and freuqencies
+        next_words = list(cfd[word].items())
+        #clean up used words
+        next_words = [(w, f) for w, f in next_words if w not in used_words]
+
+        if not next_words:
+            break
+
+        #calculating the probabilities for the next words
+        total = sum(freq for _, freq in next_words)
+        probabilities = [freq/total for _, freq in next_words]
+        
+        #choosing next word based on above probs
+        next_word = random.choices(
+            [w for w, _ in next_words],
+            weights=probabilities,
+            k=1
+        )[0]
+       
+        if next_word not in used_words:
+            sentence.append(next_word)
+            used_words.add(next_word)
+        
+        word = next_word
+        current_length += 1
+    
+      if not sentence:
+        return "Could you please rephrase that?"
+        
+      result = ' '.join(sentence)
+      result = result.capitalize()
+     
+      return result
+
 
 if __name__ == '__main__':
         app.run(debug=True, host='0.0.0.0')
