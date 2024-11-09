@@ -1,0 +1,103 @@
+{"data": [
+    {"category": "greetings",
+     "patterns": ["Hi there", "How are you", "Is anyone there?","Hey","Hola", "Hello", "Good day","Hello!", "Hi","Hi there!", "Good morning!", "Good afternoon!", "Good evening!", "Hey!", "How are you?", "What's up?", "Greetings!", "Salutations!", "Howdy!", "Welcome!", "How’s it going?"],
+     "response": ["Hi there!", "Hi there, how can I help?"],
+     "context": [""]
+    },
+    {"category": "goodbyes",
+     "patterns": ["bye", "Goodbye", "Bye", "See you later", "Goodbye", "bye", "Till next time","Goodbye", "See you later!", "Take care!", "Farewell!"],
+     "response": ["See you!", "Have a nice day", "Bye! Come back again soon."],
+     "context": [""]
+    },
+    {"category": "thanks",
+     "patterns": ["Thanks", "Thank you", "That's helpful", "Awesome, thanks", "Thanks for helping me","Thank you!", "Thanks a lot!", "Thanks so much!", "I appreciate it!", "Thank you very much!", "Thanks for your help!", "Many thanks!", "Thanks a million!", "Thanks for everything!", "I can't thank you enough!", "Thanks for your support!", "I'm grateful!", "Thanks for your time!", "I owe you one!", "Thanks a bunch!", "Cheers!", "Thank you kindly!", "Thank you for your consideration!", "Thanks for being there!", "Sincere thanks!"],
+     "response": ["My pleasure", "You're Welcome"],
+     "context": [""]
+    },
+    {"category": "admissions",
+    "patterns": ["Admissions","Aid","Undergraduate","Graduate","Programs","3+1","4+1","Bachelor's","Master's","college admissions", "university admissions", "admissions process", "admissions requirements", "admissions criteria", "admissions deadlines", "admissions office", "admissions test", "graduate admissions", "undergraduate admissions", "admissions essay", "admissions interview", "admissions policy", "admissions counselor", "admissions committee", "online admissions", "admissions statistics", "admissions fee", "admissions decisions", "rolling admissions", "early admissions"],
+    "response": ["Here is information of admissions: https://wit.edu/admissions"],
+    "context": [""]
+    },
+    {"category": "tuition",
+    "patterns": ["tuition", "Cost","Money","yearly cost","How much?","What is the tuition?","Tutition","college tuition", "university tuition", "tuition fees", "tuition cost", "tuition payment", "in-state tuition", "out-of-state tuition", "international tuition", "graduate tuition", "undergraduate tuition", "tuition rates", "tuition increase", "tuition reduction", "tuition assistance", "tuition reimbursement", "tuition scholarships", "tuition waiver", "tuition discount", "online tuition", "educational fees", "school fees", "tuition charges", "cost of attendance", "fee schedule", "learning fees", "course fees"],
+    "response": ["Here is the tuition information: https://wit.edu/admissions/student-services/billing/tuition-and-costs"],
+    "context": [""]
+    },
+    {"category": "financial aid",
+    "patterns": ["Financial Aid","Finance","tuition support", "tuition aid", "aid", "tuition assistance","FAFSA","government loans", "loans", "financial support", "financial assistance","Financial aid application", "Scholarship opportunities", "Need-based aid", "Merit-based scholarships", "FAFSA", "Pell Grant", "Student loans", "Loan repayment", "Work-study program", "Financial aid package", "Cost of attendance", "Tuition assistance", "Grant eligibility", "Award letter", "Expected family contribution", "Financial aid office", "Income verification", "Scholarship deadlines", "Private loans", "Interest rates", "Loan forgiveness", "Financial literacy", "Budgeting for college", "Emergency grants", "Cumulative GPA requirement", "Aid renewal process", "State aid programs", "Financial aid counselor", "Student aid report", "Financial need assessment", "Scholarship search", "Appealing financial aid decisions", "Funding sources", "Tuition remission", "Alternative funding options"],
+    "response": ["Here is the financial aid information: https://wit.edu/admissions/financial-aid"],
+    "context": [""]
+    },
+    {"category": "majors",
+    "patterns": ["Majors","Engineering","Degrees","Curriculum","Fields of Study","Studies","Sciences","STEM","Architecture","Computer Science","college major", "academic major", "university major", "major program", "major field of study", "declaring a major", "choosing a major", "undergraduate major", "graduate major", "major requirements", "major concentration", "dual major", "double major", "major courses", "primary major", "secondary major", "major specialization", "degree major", "academic concentration", "area of study", "field of study", "academic discipline", "program of study", "major track", "major focus", "subject major","architecture", "civil engineering", "mechanical engineering", "electrical engineering", "computer science", "software engineering", "environmental science", "biomedical engineering", "data science", "industrial engineering", "information technology", "materials science", "chemical engineering", "mathematics", "physics", "urban planning", "construction management", "interior design", "landscape architecture", "graphic design", "architecture history"],
+    "response": ["Here is Major and Degree information: https://wit.edu/academics/degrees/inquiry?utm_content=footer"],
+    "context": [""]
+    },
+    {"category": "housing",
+    "patterns": ["How much is housing?", "Double", "Triple","Housing","Rooms","Roommates","Roommate","Kitchen","Buildings","Dormitories","student housing", "university housing", "campus housing", "college housing", "on-campus housing", "off-campus housing", "housing options", "housing application", "housing fees", "housing cost", "housing deposit", "residential housing", "dormitory housing", "dorm rooms", "shared housing", "private housing", "single dorm", "double dorm", "roommate matching", "housing accommodations", "housing services", "housing assignment", "housing contract", "affordable housing", "temporary housing", "family housing", "graduate housing", "undergraduate housing", "housing availability", "housing facilities", "living arrangements", "residential life", "housing policy","residential life", "housing policy"],
+    "response": ["Here is information on housing: https://wit.edu/student-life/housing-dining"],
+    "context": [""]
+    },
+    {"category": "faculty",
+    "patterns": ["Professors","Teachers","Assisting","Directory","Tenured Staff","Staff","Head of Deparments","Dean","President","Principal","faculty members", "academic faculty", "university faculty", "college faculty", "faculty staff", "faculty department", "faculty office", "faculty advisor", "faculty development", "faculty research", "faculty governance", "tenured faculty", "adjunct faculty", "faculty position", "faculty promotion", "faculty hiring", "faculty directory", "faculty chair", "faculty committee", "faculty evaluation", "teaching faculty", "faculty senate", "faculty workload", "faculty appointments", "emeritus faculty", "faculty engagement", "faculty leadership", "faculty support", "faculty collaboration", "academic staff", "professorial staff", "faculty expertise", "faculty recruitment", "professors", "associate professors", "assistant professors", "lecturers", "senior lecturers", "instructors", "teaching assistants", "academic staff", "teaching staff", "research staff", "instructional staff", "teaching faculty", "academic advisors", "academic coordinators", "educators", "department chairs", "school deans", "academic instructors", "faculty mentors", "education professionals", "academic leaders"],
+    "response": ["Here is information on Faculty and Staff: https://wit.edu/faculty-staff-directory\nhttps://wit.edu/about/offices-departments"],
+    "context": [""]
+    },
+    {"category": "application",
+    "patterns": ["common app, common-app, Apply","How to apply","Common App"," Application","Acceptance Rate","How to get in","Interviews","Tests","Scores","SATs","ACTs","SAT","ACT","college application", "university application", "application process", "application form", "application deadline", "online application", "application fee", "admission application", "graduate application", "undergraduate application", "application requirements", "application status", "application submission", "application portal", "application materials", "application instructions", "application review", "application decision", "application checklist", "scholarship application", "financial aid application", "job application", "program application", "application essay", "supplemental application", "early application", "late application", "application documents", "application tracking", "application package", "common application", "application approval", "application rejection", "application guidelines", "application timeline"],
+    "response": ["Here is information on the applications: https://ceadmissions.wit.edu/apply/ \n https://wit.edu/admissions/graduate/applications\n https://wit.edu/admissions/apply-now?utm_content=footer"],
+    "context": [""]
+    },
+    {"category": "safety",
+    "patterns": ["Police","Safety","Violence","police station","Crime","Clery Report","Sheriff","Justice","Violence","Title-IX","campus safety", "campus security", "university safety", "college safety", "campus police", "campus safety measures", "campus security services", "campus safety policies", "emergency response", "campus safety officers", "safety protocols", "campus crime prevention", "student safety", "campus surveillance", "campus safety programs", "security patrols", "campus emergency procedures", "campus safety tips", "campus safety resources", "safety alerts", "campus safety training", "security escorts", "campus emergency services", "campus safety initiatives", "campus safety apps", "campus safety reports", "campus safety hotline", "public safety department", "safe campus environment", "campus safety awareness", "emergency notification systems", "campus safety drills", "blue button emergency", "blue emergency"],
+    "response": ["Here is information on public safety: https://wit.edu/about/public-safety"],
+    "context": [""]
+    },
+    {"category": "calendar",
+    "patterns": ["Calendar","Dates","When is","Semester","First Day","Day Off","Holiday","Deadline","academic calendar", "event calendar", "university calendar", "college calendar", "school calendar", "campus events", "upcoming events", "calendar of events", "event schedule", "event planning", "event registration", "event announcement", "event management", "event booking", "event coordination", "event reminders", "event invitations", "event details", "special events", "student events", "faculty events", "community events", "event updates", "event participation", "calendar dates", "event notifications", "event organizer", "holiday calendar", "semester calendar", "event programming", "event listing", "conference calendar", "campus calendar", "event venues", "virtual events", "event timeline", "event RSVP"],
+    "response": ["Here is the Academic Calendar: https://wit.edu/academics/academic-calendar"],
+    "context": [""]
+    },
+    {"category": "athletics",
+    "patterns": ["team","sports", "athletics", "intramural sports", "basketball", "baseball", "volleyball", "football", "soccer", "rugby", "fields", "turf fields", "ball", "swimming", "rowing", "fencing", "esports", "track", "track and field", "throwing", "sprinting", "long distance", "hurdles", "cross country", "skiing", "hockey", "golf", "flag football", "cornhole", "pickleball"],
+    "response": ["Here is some information on our athletics: https://wit.edu/student-life/sports-recreation"],
+    "context": [""]
+    },
+    {"category": "dining",
+    "patterns": ["food","dining", "dining hall", "dining hours", "dining options","dining options", "food quality", "dietary options", "diverse menu", "Vegan options", "meal plans", "coffee shop", "coffee", "dining events", "meal swipes", "Late night food options", "new menu items", "themed dining", "themed food", "Food allergy accommodations", "Food delivery", "allergies", "allergy", "vegan", "pescatarian", "pescaterian", "vegetarian"],
+    "response": ["Here is the dining information: https://wit.edu/student-life/housing-dining"],
+    "context": [""]
+    },
+    {"category": "commuter",
+    "patterns": ["commuter","commute","commuting","travel","commutes","commuted","commute","green line e", "heath street", "subway", "public transportation", "off-campus", "off campus", "parking", "parking pass","parking-pass", "parking lot", "green line", "orange line", "Museum of Fine Arts", "green line stop", "orange line stop", "red line", "blue line", "commuter rail", "MBTA","MBTA pass", "commuter pass", "discounted mbta pass", "discounted commuter pass","Transportation", "Public transit" , "Bicycling", "Walking", "Train station", "Bus stop", "Subway", "Transit", "Shuttle service", "shuttle"],
+    "response": ["Here is the commuter information: https://wit.edu/student-life/commuters"],
+    "context": [""]
+    },
+    {"category": "coops",
+    "patterns": ["coops","co-ops","co-op","internship","work","work-study","co-op semester", "Co-op program", "internship opportunity"," Work experience", "Ccareer development", "career", "networking", "Resume", "Job", "Mentorship", "Industry exposure","industry", "Skills", "Interview", "Worksite learning", "Field experience", "Job placement", "job fair", "Co-op employer", "Career fair", "Part-time","employment", "Cooperative education"],
+    "response": ["Here is some common information on Co-Ops and Internships: https://wit.edu/co-ops-careers"],
+    "context": [""]
+    },
+    {"category": "Boston",
+    "patterns": ["nearby","closeby","near","around the area","in the area", "Boston", "Huntington avenue", "surrounding area", "location"," mission hill", "fenway", "massachusetts", "new england", "ruggles street", "ruggles st", "west roxbury", "jamaica plain","location", "boston", "area", "surrounding area", "restaurants"],
+    "response": ["Here is some information on location: https://wit.edu/about/map"],
+    "context": [""]
+    },
+    {"category": "clubs",
+    "patterns": ["clubs", "club", "extracurricular activities", "extracurricular", "events", "fraternities", "frats", "frat", "sororities", "milk club", "accelerate", "biggest clubs", "organizations", "organized events", "trips", "student clubs", "student government", "government", "council", "student body", "student president", "study abroad"],
+    "response": ["Here is some information on clubs: https://wit.edu/student-life/clubs-organizations"],
+    "context": [""]
+    },
+    {"category": "request information",
+    "patterns": ["advising","information", "info", "help", "human resources", "counselor", "adivsor", "student success advisor", "primary advisor", "helping","email", "real person", "person", "advising team", "learning and advising resources", "success studio", "hub", "helpdesk", "infohub"],
+    "response": ["Here is a good resource to request extra information: https://wit.edu/academics/degrees/inquiry?utm_content=footer"],
+    "context": [""]
+    },
+    {"category": "academics",
+    "patterns": ["study abroad","study","honors program","honors","AP credits","class-size","student to faculty ratio","student-to-faculty-ratio","academics","academic support", "academic rigor","professors","classrooms","lectures","labs","labrooms","lecture halls","ROI","semester","academic information","information on schools","school information"],
+    "response": ["Here is some academic information: https://wit.edu/academics"],
+    "context": [""]
+    }
+    
+]}
