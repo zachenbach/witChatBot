@@ -26,6 +26,12 @@ for info in data['data']:
         documents.append((wordList, info['category']))
         if info['category'] not in classes:
             classes.append(info['category'])
+    for phrase in info['knownPhrases']:
+        phraseList = nltk.word_tokenize(phrase)
+        words.extend(phraseList)
+        documents.append((phraseList,info['category']))
+        if info['category'] not in classes:
+            classes.append(info['category'])
 
 words = [lemmatizer.lemmatize(word) for word in words if word not in ignoreLetters]
 words = sorted(set(words))
@@ -63,10 +69,10 @@ model.add(tf.keras.layers.Dense(128, activation = 'relu'))
 model.add(tf.keras.layers.Dropout(0.3))
 model.add(tf.keras.layers.Dense(len(trainY[0]), activation='softmax'))
 
-sgd = tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
+sgd = tf.keras.optimizers.SGD(learning_rate=0.0005, momentum=0.75, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-hist = model.fit(np.array(trainX), np.array(trainY), epochs=45, batch_size=5, verbose=1)
+hist = model.fit(np.array(trainX), np.array(trainY), epochs=1000, batch_size=10, verbose=1)
 model.save('trainedModel.h5', hist)
 print('Done')
 

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from spellchecker import SpellChecker
 import random
 import json
@@ -10,6 +10,7 @@ from nltk import pos_tag
 from keras.models import load_model 
 from nltk import ConditionalFreqDist, bigrams #new
 from nltk.tokenize import word_tokenize #new
+nltk.download('universal_tagset')
 
 
 #Global Resources
@@ -93,13 +94,26 @@ def index():
 @app.route('/submit', methods=['POST'])
 def submit():
     if request.method == 'POST':
-        user_input = request.json.get('user_input')  # Get data from HTML form
-        if(user_input==None):
-            return "Womp Womp"
-        
-        result = chatBot(user_input)  # Call your Python function with the input
-        return result
+        user_input = request.json.get('user_input')
+        print("It made it here " + user_input)
+        result = chatBot(user_input)
+        category, responseStatus, response = result
+        return jsonify({"message": response, "category": category}),responseStatus
 
+@app.route('/write', methods=['POST'])
+def write():
+    message = request.json.get('message')
+    category = request.json.get('category')
+    print("It made it here " + message + "and here " + category)
+    correctedInput = inputCorrector(message)
+    for cat in DATA["data"]:
+        if cat["category"] == category: 
+            if correctedInput not in cat["knownPhrases"]:
+                cat["knownPhrases"].append(correctedInput)
+            break
+    with open('.venv\\nounData.json', 'w') as file:
+        json.dump(DATA, file, indent=4)
+    return jsonify({"message": "done"})
 
 #Main (chatbot)
 #Takes in input, from POST. Sends input to be corrected, then uses the new message to find the intention, then the intention and "trainingData.json" to get a message
@@ -107,7 +121,7 @@ def chatBot(inputD):
     print(inputD)
     correctedInput = inputCorrector(inputD)
     category = predictCategory(correctedInput)
-    response = predictBestResponse(category, DATA,correctedInput)
+    response = predictBestResponse(category, DATA, correctedInput)
     return response
 
 
@@ -125,8 +139,8 @@ def inputCorrector(sentence):
 #Takes in the input, and tokenizes it ( turns each word into an index in a list ).
 #Uses the tokenized input to lemmatize the words ( taking all forms of tyhe same word and grouping them together ). Finally, the functions returns.
 def inputNormalizer(input):
-    posWords = pos_tag(nltk.word_tokenize(input))
-    nouns = [word for word, pos in posWords if pos == "NN"]
+    posWords = pos_tag(nltk.word_tokenize(input),tagset='universal')
+    nouns = [word for word, pos in posWords if pos in {"NOUN","VERB","PROPN","ADJ","ADV","ADP","PRON"}]
     nouns = [LEMMATIZER.lemmatize(word) for word in nouns]
     print(nouns)
     return nouns
@@ -167,13 +181,14 @@ def predictBestResponse(dataList, dataJSON,input):
     worth = False
     try: 
         if not dataList:
-            return "I'm sorry, could you be more specific?"
+            return {0,0,"I'm sorry, could you be more specific?"}
         
 
         category = dataList[0]['category']
         probability = dataList[0]['probability']
         print("Category: " + category + "\nChance: " + probability)
         probability = float(probability)
+        
 
         pthreshold = 0.65 if len(input) <= 4 else 0.25
         if(probability > pthreshold):
@@ -185,13 +200,17 @@ def predictBestResponse(dataList, dataJSON,input):
                 if idx['category'] == category:
                     response = random.choice (idx['response'])
                     break
-            return response
+            if(category in {"thanks","greetings","goodbyes"}):
+                return category, 0, response
+            else:
+                return category, 1, response
         else:
-            return generateNLGResponse(input)
+            response = generateNLGResponse(input)
+            return category, 0, response
     except Exception as e:
         print(f"Error in get_response: {str(e)}")
-        return generateNLGResponse(None)
-
+        response = generateNLGResponse(None)
+        return category, 0, response
 
 #generateNLGResponse
 #Takes in the category, finds a response to respond with. If it containts a question identifier, generate a response, if not choose from defaultResponses.
